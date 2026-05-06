@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>💌 Carta de Amor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Dancing+Script:wght@400;700&family=Great+Vibes&family=Satisfy&family=Caveat:wght@400;700&family=Sacramento&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --t-bg-from: #210818; --t-bg-to: #0d0208;
+      --t-accent: #c9a96e; --t-accent-light: #e8d5a3;
+      --t-deep: #5c0d1e; --t-mid: #8b2635; --t-soft: #c2627a; --t-blush: #f4a7b9;
+      --t-seal-a: #8b2635; --t-seal-b: #3d0010;
+      --t-env-a: #fef4e2; --t-env-b: #f5e0c8; --t-env-c: #e8cfa8;
+      --t-paper-a: #fffef9; --t-paper-b: #fff9ee; --t-paper-c: #fef3df;
+      --t-line: rgba(194,98,122,.12); --t-text: #2a0a14;
+      --cream: #fdf6ec;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(ellipse at 50% 40%, var(--t-bg-from) 0%, var(--t-bg-to) 100%);
+      font-family: 'Dancing Script', cursive;
+      color: var(--cream);
+      overflow-x: hidden;
+      transition: background 0.6s ease;
+    }
+
+    /* ── STARS ── */
+    .star { position: fixed; background: #fff; border-radius: 50%; pointer-events: none; animation: twinkle ease-in-out infinite alternate; }
+    @keyframes twinkle { from { opacity:.15; transform:scale(.7); } to { opacity:1; transform:scale(1.3); } }
+
+    /* ── PARTICLES ── */
+    #particles { position: fixed; inset: 0; pointer-events: none; z-index: 1; overflow: hidden; }
+    .particle { position: absolute; top: -40px; opacity: 0; user-select: none; animation: fallDown linear infinite; }
+    @keyframes fallDown {
+      0%   { transform: translateY(0) rotate(0deg) scale(.8); opacity: 0; }
+      8%   { opacity: 1; }
+      92%  { opacity: .7; }
+      100% { transform: translateY(110vh) rotate(540deg) scale(1.1); opacity: 0; }
+    }
+
+    /* ════ CREATOR ════ */
+    #creator { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 50px 20px; position: relative; z-index: 10; }
+
+    .creator-title { font-family:'Playfair Display',serif; font-style:italic; font-size:clamp(2rem,5vw,3.2rem); color:var(--t-accent-light); text-align:center; margin-bottom:6px; text-shadow:0 0 40px rgba(0,0,0,.4); transition:color .4s; }
+    .creator-sub   { font-size:1.15rem; color:var(--t-blush); text-align:center; margin-bottom:40px; opacity:.8; transition:color .4s; }
+
+    .creator-card { width:100%; max-width:580px; background:rgba(255,255,255,.04); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,.12); border-radius:24px; padding:40px 36px; box-shadow:0 30px 80px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.08); }
+
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display:block; font-family:'Playfair Display',serif; font-size:.8rem; letter-spacing:2.5px; text-transform:uppercase; color:var(--t-accent); margin-bottom:8px; transition:color .4s; }
+    .form-group input, .form-group textarea, .form-group select {
+      width:100%; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); border-radius:12px;
+      padding:13px 17px; color:var(--cream); font-family:'Dancing Script',cursive; font-size:1.1rem;
+      outline:none; transition:border-color .3s, box-shadow .3s; resize:vertical;
+    }
+    .form-group select { cursor:pointer; }
+    .form-group select option { background:#1a0510; color:var(--cream); }
+    .form-group input::placeholder, .form-group textarea::placeholder { color:rgba(255,255,255,.22); }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color:var(--t-accent); box-shadow:0 0 0 3px rgba(255,255,255,.08); }
+
+    /* ── PERSONALIZATION PANEL ── */
+    .custom-toggle {
+      width:100%; padding:13px 18px; margin:10px 0 0;
+      background:rgba(255,255,255,.05); border:1px dashed rgba(255,255,255,.18); border-radius:12px;
+      color:var(--t-accent-light); font-family:'Dancing Script',cursive; font-size:1.1rem;
+      cursor:pointer; display:flex; align-items:center; justify-content:space-between; transition:all .3s;
+    }
+    .custom-toggle:hover { background:rgba(255,255,255,.09); border-color:var(--t-accent); }
+    .custom-toggle .arrow { transition:transform .35s; font-style:normal; font-size:.85rem; }
+    .custom-toggle.open .arrow { transform:rotate(180deg); }
+
+    .custom-body { max-height:0; overflow:hidden; transition:max-height .5s cubic-bezier(.4,0,.2,1); }
+    .custom-body.open { max-height:1400px; }
+    .custom-inner { padding-top:22px; }
+
+    .custom-divider { height:1px; background:linear-gradient(to right,transparent,rgba(255,255,255,.1),transparent); margin:18px 0; }
+
+    /* Theme grid */
+    .theme-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+    .theme-swatch { border:2px solid transparent; border-radius:12px; padding:12px 8px; cursor:pointer; text-align:center; background:rgba(255,255,255,.04); transition:all .25s; }
+    .theme-swatch:hover { transform:translateY(-2px); border-color:rgba(255,255,255,.2); }
+    .theme-swatch.selected { border-color:var(--t-accent); box-shadow:0 0 0 3px rgba(255,255,255,.07); animation:selectPop .3s ease; }
+    .swatch-dot { width:32px; height:32px; border-radius:50%; margin:0 auto 6px; box-shadow:0 2px 8px rgba(0,0,0,.4); }
+    .swatch-name { font-family:'Playfair Display',serif; font-size:.68rem; letter-spacing:1px; color:rgba(255,255,255,.7); line-height:1.3; }
+
+    /* Font grid */
+    .font-grid { display:flex; flex-direction:column; gap:8px; }
+    .font-card { border:2px solid transparent; border-radius:12px; padding:11px 16px; cursor:pointer; background:rgba(255,255,255,.04); transition:all .25s; display:flex; align-items:center; gap:14px; }
+    .font-card:hover { background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.15); }
+    .font-card.selected { border-color:var(--t-accent); background:rgba(255,255,255,.08); animation:selectPop .3s ease; }
+    .font-card-label { font-family:'Playfair Display',serif; font-size:.68rem; letter-spacing:1.5px; text-transform:uppercase; color:var(--t-accent); min-width:88px; transition:color .4s; }
+    .font-card-preview { font-size:1.15rem; color:var(--cream); opacity:.85; }
+
+    /* Particle grid */
+    .particle-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+    .particle-btn { border:2px solid transparent; border-radius:12px; padding:12px 8px; cursor:pointer; text-align:center; background:rgba(255,255,255,.04); transition:all .25s; }
+    .particle-btn:hover { background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.2); transform:translateY(-2px); }
+    .particle-btn.selected { border-color:var(--t-accent); box-shadow:0 0 0 3px rgba(255,255,255,.07); animation:selectPop .3s ease; }
+    .pb-emojis { font-size:1.1rem; letter-spacing:2px; display:block; margin-bottom:5px; }
+    .pb-name { font-family:'Playfair Display',serif; font-size:.68rem; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,.6); }
+
+    @keyframes selectPop { 0%{transform:scale(1)} 45%{transform:scale(1.07)} 100%{transform:scale(1)} }
+
+    .btn-generate {
+      width:100%; padding:15px; margin-top:20px;
+      background:linear-gradient(135deg, var(--t-deep), var(--t-mid));
+      border:none; border-radius:12px; color:var(--cream);
+      font-family:'Dancing Script',cursive; font-size:1.35rem; letter-spacing:1px;
+      cursor:pointer; transition:all .3s; box-shadow:0 8px 25px rgba(0,0,0,.4);
+    }
+    .btn-generate:hover { filter:brightness(1.2); transform:translateY(-2px); box-shadow:0 14px 35px rgba(0,0,0,.5); }
+    .btn-generate:active { transform:translateY(0); }
+
+    /* Link section */
+    #linkSection { display:none; width:100%; max-width:580px; margin-top:36px; background:rgba(255,255,255,.04); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,.12); border-radius:24px; padding:38px 36px; text-align:center; animation:fadeUp .6s ease; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+    #linkSection h3 { font-family:'Playfair Display',serif; font-size:1.5rem; color:var(--t-accent-light); margin-bottom:8px; }
+    #linkSection p  { color:var(--t-blush); font-size:1rem; margin-bottom:22px; }
+
+    .link-box { display:flex; gap:10px; margin-bottom:10px; }
+    .link-box input { flex:1; min-width:0; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); border-radius:10px; padding:11px 14px; color:var(--t-blush); font-size:.82rem; font-family:monospace; outline:none; }
+    .btn-copy { padding:11px 20px; background:linear-gradient(135deg,var(--t-accent),var(--t-deep)); border:none; border-radius:10px; color:var(--cream); font-family:'Dancing Script',cursive; font-size:1rem; font-weight:700; cursor:pointer; transition:all .3s; white-space:nowrap; }
+    .btn-copy:hover { transform:translateY(-2px); filter:brightness(1.15); }
+    .copy-msg { font-size:.9rem; color:#90ee90; opacity:0; transition:opacity .3s; margin-bottom:18px; display:block; }
+    .copy-msg.show { opacity:1; }
+    .btn-preview { display:inline-block; padding:13px 34px; border:2px solid var(--t-soft); border-radius:50px; color:var(--t-soft); font-family:'Dancing Script',cursive; font-size:1.2rem; text-decoration:none; transition:all .3s; }
+    .btn-preview:hover { background:var(--t-soft); color:#fff; transform:translateY(-2px); }
+
+    /* ════ VIEWER ════ */
+    #viewer { display:none; position:fixed; inset:0; flex-direction:column; align-items:center; justify-content:center; z-index:10; }
+    .hint-text { font-family:'Playfair Display',serif; font-style:italic; font-size:clamp(1rem,2.5vw,1.35rem); color:var(--t-blush); margin-bottom:44px; letter-spacing:3px; animation:hintPulse 2.4s ease-in-out infinite; transition:opacity .5s; }
+    @keyframes hintPulse { 0%,100%{opacity:.55;transform:translateY(0)} 50%{opacity:1;transform:translateY(-5px)} }
+
+    /* ── ENVELOPE ── */
+    .env-scene { perspective:1200px; cursor:pointer; }
+    .envelope { width:clamp(280px,48vw,380px); height:clamp(185px,32vw,256px); position:relative; transform-style:preserve-3d; animation:envBob 4s ease-in-out infinite; transition:transform .3s; }
+    .envelope:hover:not(.opening) { transform:scale(1.04) rotate(-.5deg); }
+    @keyframes envBob { 0%,100%{transform:translateY(0) rotate(-1deg)} 50%{transform:translateY(-14px) rotate(1deg)} }
+    .envelope.opening, .envelope.opening:hover { animation:none !important; transform:none !important; }
+
+    .env-body { position:absolute; inset:0; background:linear-gradient(160deg,var(--t-env-a) 0%,var(--t-env-b) 55%,var(--t-env-c) 100%); border-radius:3px; box-shadow:0 28px 65px rgba(0,0,0,.65),0 6px 18px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.6); overflow:hidden; }
+    .env-fold-l { position:absolute; inset:0; background:linear-gradient(to bottom right,transparent 50%,rgba(0,0,0,.07) 50%); }
+    .env-fold-r { position:absolute; inset:0; background:linear-gradient(to bottom left,transparent 50%,rgba(0,0,0,.07) 50%); }
+    .env-bottom { position:absolute; bottom:0; left:0; right:0; height:50%; background:linear-gradient(to bottom,transparent,rgba(0,0,0,.07)); }
+    .env-border { position:absolute; inset:3px; border:1px solid rgba(255,255,255,.25); border-radius:2px; pointer-events:none; }
+
+    .env-seal { position:absolute; bottom:22%; left:50%; transform:translateX(-50%); width:52px; height:52px; background:radial-gradient(circle at 40% 35%,var(--t-seal-a),var(--t-seal-b)); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; line-height:1; box-shadow:0 4px 16px rgba(0,0,0,.5),0 0 0 2px rgba(255,255,255,.2); z-index:6; transition:opacity .4s .1s,transform .4s .1s; }
+    .envelope.opening .env-seal { opacity:0; transform:translateX(-50%) scale(0) rotate(90deg); }
+
+    .env-flap { position:absolute; top:0; left:0; width:100%; height:55%; background:linear-gradient(175deg,var(--t-env-a) 0%,var(--t-env-b) 100%); clip-path:polygon(0 0,100% 0,50% 100%); transform-origin:top center; transform-style:preserve-3d; backface-visibility:hidden; z-index:8; transition:transform .95s cubic-bezier(.4,0,.2,1); filter:drop-shadow(0 4px 8px rgba(0,0,0,.2)); }
+    .env-flap::after { content:''; position:absolute; inset:0; clip-path:polygon(0 0,100% 0,50% 100%); background:linear-gradient(180deg,rgba(0,0,0,.12) 0%,transparent 60%); }
+    .envelope.opening .env-flap { transform:rotateX(-185deg); }
+
+    .letter-inside { position:absolute; left:7%; right:7%; bottom:4%; height:87%; background:var(--t-paper-a); border-radius:2px; z-index:4; box-shadow:0 -3px 10px rgba(0,0,0,.12); transform-origin:bottom center; transition:transform 1.05s .55s cubic-bezier(.25,.46,.45,.94); background-image:repeating-linear-gradient(transparent,transparent 27px,var(--t-line) 27px,var(--t-line) 28px); }
+    .letter-inside.rising { transform:translateY(-92%); }
+
+    /* ── LETTER OVERLAY ── */
+    #overlay { position:fixed; inset:0; z-index:200; display:flex; align-items:center; justify-content:center; padding:20px; background:radial-gradient(ellipse at 50% 40%,var(--t-bg-from) 0%,var(--t-bg-to) 100%); opacity:0; pointer-events:none; transition:opacity .85s ease; overflow-y:auto; }
+    #overlay.show { opacity:1; pointer-events:all; }
+
+    .letter-paper { position:relative; width:min(680px,94vw); background:linear-gradient(155deg,var(--t-paper-a) 0%,var(--t-paper-b) 50%,var(--t-paper-c) 100%); border-radius:4px; padding:clamp(28px,6vw,60px) clamp(28px,7vw,70px) clamp(28px,5vw,48px); color:var(--t-text); box-shadow:0 40px 100px rgba(0,0,0,.85),0 0 0 1px rgba(255,255,255,.1); background-image:linear-gradient(155deg,var(--t-paper-a) 0%,var(--t-paper-b) 50%,var(--t-paper-c) 100%),repeating-linear-gradient(transparent,transparent 30px,var(--t-line) 30px,var(--t-line) 31px); transform:scale(.88) translateY(24px); transition:transform .9s .15s cubic-bezier(.34,1.56,.64,1); max-height:calc(100vh - 40px); overflow-y:auto; }
+    #overlay.show .letter-paper { transform:scale(1) translateY(0); }
+    .letter-paper::-webkit-scrollbar { width:4px; }
+    .letter-paper::-webkit-scrollbar-thumb { background:var(--t-soft); opacity:.4; border-radius:2px; }
+    .letter-paper::before { content:''; position:absolute; top:0; right:0; width:0; height:0; border-style:solid; border-width:0 44px 44px 0; border-color:transparent rgba(0,0,0,.07) transparent transparent; }
+    .letter-paper::after  { content:''; position:absolute; top:0; left:75px; bottom:0; width:1px; background:var(--t-line); }
+
+    .ltr-date  { font-family:'Playfair Display',serif; font-style:italic; font-size:.9rem; color:var(--t-deep); opacity:.6; text-align:right; margin-bottom:28px; }
+    .ltr-dear  { font-family:'Playfair Display',serif; font-style:italic; font-size:clamp(1.3rem,3vw,1.75rem); color:var(--t-deep); margin-bottom:22px; }
+    .ltr-divider { border:none; height:1px; background:linear-gradient(to right,transparent,var(--t-soft),transparent); opacity:.4; margin:22px 0; }
+    .ltr-body  { font-size:clamp(1.15rem,2.4vw,1.45rem); line-height:2.05; color:var(--t-text); white-space:pre-wrap; }
+    .ltr-sign  { font-size:clamp(1.2rem,2.4vw,1.55rem); color:var(--t-deep); text-align:right; line-height:1.6; margin-top:36px; }
+    .ltr-hearts { text-align:center; font-size:1.4rem; letter-spacing:12px; margin-top:28px; animation:heartBeat 1.6s ease-in-out infinite; }
+    @keyframes heartBeat { 0%,100%{transform:scale(1)} 50%{transform:scale(1.18)} }
+
+    .btn-close { display:block; width:100%; margin-top:36px; padding:14px; background:linear-gradient(135deg,var(--t-deep),var(--t-mid)); border:none; border-radius:10px; color:var(--cream); font-family:'Dancing Script',cursive; font-size:1.15rem; cursor:pointer; transition:all .3s; box-shadow:0 6px 20px rgba(0,0,0,.35); }
+    .btn-close:hover { filter:brightness(1.2); transform:translateY(-2px); }
+
+    @media (max-width:480px) {
+      .creator-card { padding:24px 18px; }
+      .theme-grid   { grid-template-columns:repeat(3,1fr); }
+      .link-box     { flex-direction:column; }
+      .btn-copy     { width:100%; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="particles"></div>
+
+<!-- ═══════════ CREATOR ═══════════ -->
+<div id="creator">
+  <h1 class="creator-title">Crea tu Carta de Amor</h1>
+  <p class="creator-sub">✦ Una carta especial para alguien especial ✦</p>
+
+  <div class="creator-card">
+    <form id="letterForm">
+      <div class="form-group">
+        <label>💌 Para</label>
+        <input type="text" id="para" placeholder="¿Para quién es esta carta?" maxlength="60" required />
+      </div>
+      <div class="form-group">
+        <label>✍ Tu mensaje</label>
+        <textarea id="mensaje" rows="7" placeholder="Escribe aquí todo lo que sientes…" maxlength="2000" required></textarea>
+      </div>
+      <div class="form-group">
+        <label>🌹 De parte de</label>
+        <input type="text" id="de" placeholder="Tu nombre" maxlength="60" required />
+      </div>
+
+      <!-- ── PERSONALIZATION TOGGLE ── -->
+      <button type="button" class="custom-toggle" id="customToggle">
+        <span>🎨 Personalizar tu carta</span>
+        <span class="arrow">▼</span>
+      </button>
+
+      <div class="custom-body" id="customBody">
+        <div class="custom-inner">
+
+          <!-- TEMA -->
+          <div class="form-group">
+            <label>🎨 Tema</label>
+            <div class="theme-grid" id="themeGrid"></div>
+          </div>
+          <div class="custom-divider"></div>
+
+          <!-- FUENTE -->
+          <div class="form-group">
+            <label>✒ Letra</label>
+            <div class="font-grid" id="fontGrid"></div>
+          </div>
+          <div class="custom-divider"></div>
+
+          <!-- PARTÍCULAS -->
+          <div class="form-group">
+            <label>✨ Ambiente</label>
+            <div class="particle-grid" id="particleGrid"></div>
+          </div>
+          <div class="custom-divider"></div>
+
+          <!-- SALUDO -->
+          <div class="form-group">
+            <label>💬 Saludo</label>
+            <select id="saludo">
+              <option value="queridoa">Querido/a [nombre],</option>
+              <option value="miamore">Mi amor [nombre],</option>
+              <option value="parati">Para ti, [nombre],</option>
+              <option value="corazon">A [nombre], con todo mi corazón,</option>
+            </select>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- hidden state -->
+      <input type="hidden" id="temaVal"       value="rojo" />
+      <input type="hidden" id="fuenteVal"     value="dancing" />
+      <input type="hidden" id="particulasVal" value="romantico" />
+
+      <button type="submit" class="btn-generate">Generar Carta 💌</button>
+    </form>
+  </div>
+
+  <div id="linkSection">
+    <h3>✨ ¡Tu carta está lista!</h3>
+    <p>Comparte este enlace con esa persona especial</p>
+    <div class="link-box">
+      <input type="text" id="generatedLink" readonly />
+      <button class="btn-copy" onclick="copyLink()">Copiar</button>
+    </div>
+    <span class="copy-msg" id="copyMsg">✓ ¡Enlace copiado!</span>
+    <a id="previewBtn" target="_blank" class="btn-preview">Vista previa 👁</a>
+  </div>
+</div>
+
+<!-- ═══════════ VIEWER ═══════════ -->
+<div id="viewer">
+  <p class="hint-text" id="hintText">✦ Toca para abrir tu carta ✦</p>
+  <div class="env-scene" onclick="openEnvelope()">
+    <div class="envelope" id="envelope">
+      <div class="env-body">
+        <div class="env-fold-l"></div>
+        <div class="env-fold-r"></div>
+        <div class="env-bottom"></div>
+      </div>
+      <div class="env-border"></div>
+      <div class="env-flap" id="envFlap"></div>
+      <div class="env-seal" id="envSeal">❤</div>
+      <div class="letter-inside" id="letterInside"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ LETTER OVERLAY ═══════════ -->
+<div id="overlay">
+  <div class="letter-paper" id="letterPaper"></div>
+</div>
+
+<script>
+  /* ══════ DATA ══════ */
+  const THEMES = {
+    rojo:      { name:'Rojo Pasión',  emoji:'❤',  bgFrom:'#210818', bgTo:'#0d0208', accent:'#c9a96e', accentLight:'#e8d5a3', deep:'#5c0d1e', mid:'#8b2635', soft:'#c2627a', blush:'#f4a7b9', sealA:'#8b2635', sealB:'#3d0010', envA:'#fef4e2', envB:'#f5e0c8', envC:'#e8cfa8', paperA:'#fffef9', paperB:'#fff9ee', paperC:'#fef3df', line:'rgba(194,98,122,.12)', text:'#2a0a14', sw1:'#8b2635', sw2:'#c9a96e' },
+    azul:      { name:'Azul Noche',   emoji:'💙',  bgFrom:'#081524', bgTo:'#020810', accent:'#7eb8d4', accentLight:'#b8dce8', deep:'#0d3050', mid:'#1e6080', soft:'#4a9ab8', blush:'#a8d8e8', sealA:'#1e6080', sealB:'#061525', envA:'#e8f4f8', envB:'#d0e8f0', envC:'#b8d8e8', paperA:'#f5fafd', paperB:'#eaf4f9', paperC:'#dceef5', line:'rgba(78,154,184,.12)', text:'#0a1e30', sw1:'#1e6080', sw2:'#7eb8d4' },
+    rosa:      { name:'Rosa Eterno',  emoji:'🌸',  bgFrom:'#1a0818', bgTo:'#0d0510', accent:'#d4a0b8', accentLight:'#eac8d8', deep:'#6b1a38', mid:'#a03060', soft:'#d06890', blush:'#f0a8c8', sealA:'#a03060', sealB:'#3d0820', envA:'#fef0f4', envB:'#fadde8', envC:'#f5c8d8', paperA:'#fff8fa', paperB:'#fff0f5', paperC:'#ffe8ef', line:'rgba(210,104,144,.12)', text:'#2a0820', sw1:'#a03060', sw2:'#d4a0b8' },
+    esmeralda: { name:'Esmeralda',    emoji:'💚',  bgFrom:'#071a0c', bgTo:'#020d05', accent:'#8ab878', accentLight:'#b8d4a8', deep:'#1a4a25', mid:'#2d7040', soft:'#4a9060', blush:'#90c8a0', sealA:'#2d7040', sealB:'#071a0c', envA:'#eef8f0', envB:'#d8f0de', envC:'#c0e4c8', paperA:'#f5fbf6', paperB:'#eaf6ec', paperC:'#ddf0e1', line:'rgba(74,144,96,.12)', text:'#0a2015', sw1:'#2d7040', sw2:'#8ab878' },
+    morado:    { name:'Místico',      emoji:'💜',  bgFrom:'#120828', bgTo:'#080415', accent:'#b090d0', accentLight:'#d0b8e8', deep:'#3a1060', mid:'#6030a0', soft:'#9060c0', blush:'#c098d8', sealA:'#6030a0', sealB:'#1a0840', envA:'#f5f0fe', envB:'#e8ddf8', envC:'#d8c8f0', paperA:'#faf8ff', paperB:'#f4f0fd', paperC:'#ece4fa', line:'rgba(144,96,192,.12)', text:'#180830', sw1:'#6030a0', sw2:'#b090d0' },
+    dorado:    { name:'Dorado',       emoji:'✨',  bgFrom:'#1a1408', bgTo:'#0d0a04', accent:'#d4aa50', accentLight:'#e8cc80', deep:'#5a3a10', mid:'#8a5a20', soft:'#b07838', blush:'#d4aa70', sealA:'#8a5a20', sealB:'#2a1808', envA:'#fef8e8', envB:'#f8edd0', envC:'#f0e0b0', paperA:'#fffdf5', paperB:'#fdf8e8', paperC:'#f8f0d0', line:'rgba(180,140,60,.12)', text:'#2a1808', sw1:'#8a5a20', sw2:'#d4aa50' },
+  };
+
+  const FONTS = {
+    dancing:    { name:'Dancing Script', family:"'Dancing Script', cursive",   size:'1.1rem',  preview:'Te amo con todo mi corazón' },
+    greatvibes: { name:'Great Vibes',    family:"'Great Vibes', cursive",      size:'1.45rem', preview:'Eres todo mi mundo' },
+    satisfy:    { name:'Satisfy',        family:"'Satisfy', cursive",          size:'1rem',    preview:'Mi amor eterno' },
+    caveat:     { name:'Caveat',         family:"'Caveat', cursive",           size:'1.1rem',  preview:'Siempre en mi corazón' },
+    sacramento: { name:'Sacramento',     family:"'Sacramento', cursive",       size:'1.6rem',  preview:'Para ti, con amor' },
+  };
+
+  const PARTICLES = {
+    romantico: { name:'Romántico', emojis:['❤','🌹','💕','♥','🌷','💌'] },
+    floral:    { name:'Floral',    emojis:['🌸','🌺','🌼','🪷','✿','🌻'] },
+    magico:    { name:'Mágico',   emojis:['✨','💫','⭐','🌟','✦','🔮'] },
+  };
+
+  const SALUDOS = {
+    queridoa: n => `Querido/a ${n},`,
+    miamore:  n => `Mi amor ${n},`,
+    parati:   n => `Para ti, ${n},`,
+    corazon:  n => `A ${n}, con todo mi corazón,`,
+  };
+
+  /* ══════ ENCODE / DECODE ══════ */
+  function encode(obj) {
+    const b64 = btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
+    return b64.replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'~');
+  }
+  function decode(str) {
+    const b64 = str.replace(/-/g,'+').replace(/_/g,'/').replace(/~/g,'=');
+    return JSON.parse(decodeURIComponent(escape(atob(b64))));
+  }
+  function esc(str) { const d=document.createElement('div'); d.textContent=str; return d.innerHTML; }
+
+  /* ══════ THEME ══════ */
+  function applyTheme(key) {
+    const t = THEMES[key] || THEMES.rojo;
+    const r = document.documentElement.style;
+    r.setProperty('--t-bg-from',      t.bgFrom);
+    r.setProperty('--t-bg-to',        t.bgTo);
+    r.setProperty('--t-accent',       t.accent);
+    r.setProperty('--t-accent-light', t.accentLight);
+    r.setProperty('--t-deep',         t.deep);
+    r.setProperty('--t-mid',          t.mid);
+    r.setProperty('--t-soft',         t.soft);
+    r.setProperty('--t-blush',        t.blush);
+    r.setProperty('--t-seal-a',       t.sealA);
+    r.setProperty('--t-seal-b',       t.sealB);
+    r.setProperty('--t-env-a',        t.envA);
+    r.setProperty('--t-env-b',        t.envB);
+    r.setProperty('--t-env-c',        t.envC);
+    r.setProperty('--t-paper-a',      t.paperA);
+    r.setProperty('--t-paper-b',      t.paperB);
+    r.setProperty('--t-paper-c',      t.paperC);
+    r.setProperty('--t-line',         t.line);
+    r.setProperty('--t-text',         t.text);
+  }
+
+  /* ══════ STARS ══════ */
+  function createStars() {
+    for (let i = 0; i < 90; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      const sz = Math.random() * 2.4 + .5;
+      s.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*100}vw;top:${Math.random()*100}vh;animation-duration:${Math.random()*3+2}s;animation-delay:${Math.random()*5}s`;
+      document.body.appendChild(s);
+    }
+  }
+
+  /* ══════ PARTICLES ══════ */
+  let _particles = [];
+  function createParticles(style) {
+    const c = document.getElementById('particles');
+    _particles.forEach(p => p.remove());
+    _particles = [];
+    const items = (PARTICLES[style] || PARTICLES.romantico).emojis;
+    for (let i = 0; i < 24; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.textContent = items[Math.floor(Math.random() * items.length)];
+      p.style.cssText = `left:${Math.random()*100}vw;font-size:${Math.random()*18+8}px;animation-duration:${Math.random()*10+8}s;animation-delay:${Math.random()*12}s`;
+      c.appendChild(p);
+      _particles.push(p);
+    }
+  }
+
+  /* ══════ BUILD CREATOR UI ══════ */
+  function buildThemeGrid() {
+    const g = document.getElementById('themeGrid');
+    Object.entries(THEMES).forEach(([key, t]) => {
+      const el = document.createElement('div');
+      el.className = 'theme-swatch' + (key === 'rojo' ? ' selected' : '');
+      el.dataset.key = key;
+      el.innerHTML = `<div class="swatch-dot" style="background:linear-gradient(135deg,${t.sw1},${t.sw2})"></div><div class="swatch-name">${t.emoji} ${t.name}</div>`;
+      el.addEventListener('click', () => {
+        document.querySelectorAll('.theme-swatch').forEach(x => x.classList.remove('selected'));
+        el.classList.add('selected');
+        document.getElementById('temaVal').value = key;
+        applyTheme(key);
+      });
+      g.appendChild(el);
+    });
+  }
+
+  function buildFontGrid() {
+    const g = document.getElementById('fontGrid');
+    Object.entries(FONTS).forEach(([key, f]) => {
+      const el = document.createElement('div');
+      el.className = 'font-card' + (key === 'dancing' ? ' selected' : '');
+      el.dataset.key = key;
+      el.innerHTML = `<span class="font-card-label">${f.name}</span><span class="font-card-preview" style="font-family:${f.family};font-size:${f.size}">${f.preview}</span>`;
+      el.addEventListener('click', () => {
+        document.querySelectorAll('.font-card').forEach(x => x.classList.remove('selected'));
+        el.classList.add('selected');
+        document.getElementById('fuenteVal').value = key;
+        document.getElementById('mensaje').style.fontFamily = f.family;
+      });
+      g.appendChild(el);
+    });
+  }
+
+  function buildParticleGrid() {
+    const g = document.getElementById('particleGrid');
+    Object.entries(PARTICLES).forEach(([key, p]) => {
+      const el = document.createElement('div');
+      el.className = 'particle-btn' + (key === 'romantico' ? ' selected' : '');
+      el.dataset.key = key;
+      el.innerHTML = `<span class="pb-emojis">${p.emojis.slice(0,3).join('')}</span><span class="pb-name">${p.name}</span>`;
+      el.addEventListener('click', () => {
+        document.querySelectorAll('.particle-btn').forEach(x => x.classList.remove('selected'));
+        el.classList.add('selected');
+        document.getElementById('particulasVal').value = key;
+        createParticles(key);
+      });
+      g.appendChild(el);
+    });
+  }
+
+  /* ══════ INIT ══════ */
+  (function init() {
+    createStars();
+    createParticles('romantico');
+
+    const params = new URLSearchParams(window.location.search);
+    const d = params.get('d');
+
+    if (d) {
+      try {
+        const data = decode(d);
+        applyTheme(data.tema || 'rojo');
+        createParticles(data.particulas || 'romantico');
+        initViewer(data);
+      } catch (_) {
+        showCreator();
+      }
+    } else {
+      showCreator();
+    }
+  })();
+
+  function showCreator() {
+    document.getElementById('creator').style.display = 'flex';
+    buildThemeGrid();
+    buildFontGrid();
+    buildParticleGrid();
+    document.getElementById('customToggle').addEventListener('click', function () {
+      this.classList.toggle('open');
+      document.getElementById('customBody').classList.toggle('open');
+    });
+  }
+
+  /* ══════ VIEWER INIT ══════ */
+  function initViewer(data) {
+    document.title = '\u{1F48C} Una carta para ti';
+    document.getElementById('viewer').style.display = 'flex';
+
+    const theme    = THEMES[data.tema] || THEMES.rojo;
+    const font     = FONTS[data.fuente] || FONTS.dancing;
+    const saludoFn = SALUDOS[data.saludo] || SALUDOS.queridoa;
+
+    // Seal emoji matches theme
+    document.getElementById('envSeal').textContent = theme.emoji;
+    // Hint text in chosen font
+    document.getElementById('hintText').style.fontFamily = font.family;
+
+    const dateStr = new Date().toLocaleDateString('es-ES', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+    const dateCap = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+
+    // Font size adjustments for display fonts
+    const bSize = data.fuente === 'sacramento' ? 'clamp(1.4rem,3vw,1.7rem)'
+                : data.fuente === 'greatvibes'  ? 'clamp(1.3rem,2.7vw,1.6rem)'
+                : 'clamp(1.15rem,2.4vw,1.45rem)';
+
+    document.getElementById('letterPaper').innerHTML = `
+      <div class="ltr-date">${dateCap}</div>
+      <p class="ltr-dear">${esc(saludoFn(data.para))}</p>
+      <hr class="ltr-divider" />
+      <p class="ltr-body" style="font-family:${font.family};font-size:${bSize}">${esc(data.mensaje)}</p>
+      <hr class="ltr-divider" />
+      <div class="ltr-sign" style="font-family:${font.family}">Con todo mi amor,<br><strong>${esc(data.de)}</strong></div>
+      <div class="ltr-hearts">${theme.emoji} ${theme.emoji} ${theme.emoji}</div>
+      <button class="btn-close" onclick="document.getElementById('overlay').classList.remove('show')">Cerrar carta 💌</button>
+    `;
+  }
+
+  /* ══════ FORM SUBMIT ══════ */
+  document.getElementById('letterForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const data = {
+      para:       document.getElementById('para').value.trim(),
+      mensaje:    document.getElementById('mensaje').value.trim(),
+      de:         document.getElementById('de').value.trim(),
+      tema:       document.getElementById('temaVal').value,
+      fuente:     document.getElementById('fuenteVal').value,
+      particulas: document.getElementById('particulasVal').value,
+      saludo:     document.getElementById('saludo').value,
+    };
+    const url = window.location.href.split('?')[0] + '?d=' + encode(data);
+    document.getElementById('generatedLink').value = url;
+    document.getElementById('previewBtn').href = url;
+    const ls = document.getElementById('linkSection');
+    ls.style.display = 'block';
+    ls.scrollIntoView({ behavior:'smooth', block:'center' });
+  });
+
+  /* ══════ COPY LINK ══════ */
+  function copyLink() {
+    const val = document.getElementById('generatedLink').value;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(val);
+    } else {
+      const i = document.getElementById('generatedLink');
+      i.select();
+      document.execCommand('copy');
+    }
+    const msg = document.getElementById('copyMsg');
+    msg.classList.add('show');
+    setTimeout(() => msg.classList.remove('show'), 2500);
+  }
+
+  /* ══════ OPEN ENVELOPE ══════ */
+  let opened = false;
+  function openEnvelope() {
+    if (opened) return;
+    opened = true;
+    const env   = document.getElementById('envelope');
+    const hint  = document.getElementById('hintText');
+    const inner = document.getElementById('letterInside');
+    const ol    = document.getElementById('overlay');
+    hint.style.opacity = '0';
+    env.classList.add('opening');
+    setTimeout(() => inner.classList.add('rising'), 650);
+    setTimeout(() => ol.classList.add('show'), 1400);
+  }
+</script>
+</body>
+</html>
